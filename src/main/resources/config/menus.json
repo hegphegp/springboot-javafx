@@ -1,0 +1,30 @@
+[
+  {
+    "name":"菜单1",
+    "children": [{
+      "name":"菜单1-A",
+      "children": [{"name":"菜单1-A-A"}]
+    },{
+      "name":"菜单1-B",
+      "children": []
+    },{
+      "name":"菜单1-C",
+      "children": []
+    },{
+      "name":"菜单1-D",
+      "children": []
+    }]
+  },{
+    "name":"菜单2",
+    "children": [{
+      "name":"菜单2-A",
+      "children": [{"name":"菜单2-A-A"}]
+    }]
+  },{
+    "name":"菜单3",
+    "children": [{
+      "name":"菜单3-A",
+      "children": [{"name":"菜单3-A-A"}]
+    }]
+  }
+]

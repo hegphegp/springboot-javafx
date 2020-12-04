@@ -5,12 +5,11 @@ import com.codingfly.model.MenuModel;
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.util.ObjectUtils;
@@ -72,25 +71,36 @@ public class SpringbootJavafxApplication extends AbstractJavaFxApplicationSuppor
 
         // TreeItem名字
         TreeItem<String> rootItem = new TreeItem("Inbox");
+        // 创建TreeView
+        TreeView<String> tree = new TreeView(rootItem);
         rootItem.setExpanded(true);
+        tree.setShowRoot(false); // 隐藏根节点
         // 每个Item下又可以添加新的Item
-        for (int i = 1; i < 36; i++) {
+        for (int i = 1; i < 24; i++) {
             TreeItem<String> item = new TreeItem("Message" + i);
             item.getChildren().add(new TreeItem("第三级"));
             rootItem.getChildren().add(item);
         }
-        // 创建TreeView
-        TreeView<String> tree = new TreeView(rootItem);
-        tree.setShowRoot(false); // 隐藏根节点
-        StackPane leftPane = new StackPane();
-        BorderPane pane = new BorderPane();
         Button button1 = new Button("新增连接");
-        pane.setTop(button1); //放置在上面
-//        leftPane.getChildren().add(button1);
-        pane.setCenter(tree);//放置在中间
-        leftPane.getChildren().add(pane);
 
-        StackPane rightPane = new StackPane(new Label("right"));
+        VBox leftPane = new VBox();
+        leftPane.setSpacing(10);
+        leftPane.setPadding(new Insets(5, 5, 5, 5));
+        leftPane.getChildren().addAll(button1, tree);
+        tree.setPrefHeight(Config.height);
+
+        TabPane rightPane = new TabPane();
+        Tab tab1 = new Tab("Planes", new StackPane(new Label("Show all Planes available")));
+        Tab tab2 = new Tab("Cars"  , new StackPane(new Label("Show all cars available")));
+        Tab tab3 = new Tab("Boats" , new StackPane(new Label("Show all boats available")));
+
+        rightPane.setPrefWidth(Config.width);
+        rightPane.setPrefHeight(Config.height);
+        rightPane.setStyle("-fx-background-color: red");
+
+        rightPane.getTabs().add(tab1);
+        rightPane.getTabs().add(tab2);
+        rightPane.getTabs().add(tab3);
         leftPane.setMinWidth(200);
         leftPane.setMaxWidth(200);
         splitPane.getItems().add(leftPane);
@@ -123,7 +133,7 @@ public class SpringbootJavafxApplication extends AbstractJavaFxApplicationSuppor
     }
 
     public void assemblyTabPane() {
-        Tab tab1 = new Tab("Planes", new StackPane(new Label("Show all planes available")));
+        Tab tab1 = new Tab("Planes", codeGenerate());
         Tab tab2 = new Tab("Cars"  , new StackPane(new Label("Show all cars available")));
         Tab tab3 = new Tab("Boats" , new StackPane(new Label("Show all boats available")));
 

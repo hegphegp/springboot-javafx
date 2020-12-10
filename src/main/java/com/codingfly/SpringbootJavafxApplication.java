@@ -1,6 +1,7 @@
 package com.codingfly;
 
 import com.codingfly.config.Config;
+import com.codingfly.generator.GeneratePane;
 import com.codingfly.model.MenuModel;
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import javafx.event.ActionEvent;
@@ -68,70 +69,13 @@ public class SpringbootJavafxApplication extends AbstractJavaFxApplicationSuppor
     }
 
 
-    public SplitPane codeGeneratePane() {
-        SplitPane splitPane = new SplitPane();
-
-        // TreeItem名字
-        TreeItem rootItem = new TreeItem("Inbox");
-        // 创建TreeView
-        TreeView<Object> tree = new TreeView(rootItem);
-        tree.addEventFilter(MouseEvent.MOUSE_CLICKED, (event) -> {
-            if (event.getButton() == MouseButton.SECONDARY) { // 鼠标右键事件
-                /** 删除
-                TreeItem c = tree.getSelectionModel().getSelectedItem();
-                boolean remove = c.getParent().getChildren().remove(c);
-                 */
-                TreeItem treeItem = tree.getSelectionModel().getSelectedItem();
-                if (treeItem==null) return;
-                // 给node对象添加下来菜单；
-                Node node = event.getPickResult().getIntersectedNode();
-                GlobalMenu.getInstance(treeItem).show(node, javafx.geometry.Side.BOTTOM, event.getX(), 0);
-//                String name = (String) ((TreeItem) tree.getSelectionModel().getSelectedItem()).getValue();
-            }
-        });
-        rootItem.setExpanded(true);
-        tree.setShowRoot(false); // 隐藏根节点
-        // 每个Item下又可以添加新的Item
-        for (int i = 1; i < 24; i++) {
-            TreeItem item = new TreeItem("Message" + i);
-            item.getChildren().add(new TreeItem("第三级"));
-            rootItem.getChildren().add(item);
-        }
-        Button button1 = new Button("新增连接");
-
-        VBox leftPane = new VBox();
-        leftPane.setSpacing(10);
-        leftPane.setPadding(new Insets(5, 5, 5, 5));
-        leftPane.getChildren().addAll(button1, tree);
-        tree.setPrefHeight(Config.height);
-
-        TabPane rightPane = new TabPane();
-        Tab tab1 = new Tab("Planes", new StackPane(new Label("Show all Planes available")));
-        Tab tab2 = new Tab("Cars"  , new StackPane(new Label("Show all cars available")));
-        Tab tab3 = new Tab("Boats" , new StackPane(new Label("Show all boats available")));
-
-        rightPane.setPrefWidth(Config.width);
-        rightPane.setPrefHeight(Config.height);
-        rightPane.setStyle("-fx-background-color: red");
-
-        rightPane.getTabs().add(tab1);
-        rightPane.getTabs().add(tab2);
-        rightPane.getTabs().add(tab3);
-        leftPane.setMinWidth(200);
-        leftPane.setMaxWidth(200);
-        splitPane.getItems().add(leftPane);
-        splitPane.getItems().add(rightPane);
-//        splitPane.setDividerPositions(0.25);
-        return splitPane;
-    }
-
     public ToolBar getToolBar() {
         Button button1 = new Button("代码生成器");
         Button button2 = new Button("代码生成器");
         button1.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Tab tab = new Tab("Boats" , codeGeneratePane());
+                Tab tab = new Tab("Boats" , new GeneratePane());
                 tabPane.getTabs().add(tab);
                 tabPane.getSelectionModel().select(tab);
                 /**
@@ -149,7 +93,7 @@ public class SpringbootJavafxApplication extends AbstractJavaFxApplicationSuppor
     }
 
     public void createTabPane() {
-        Tab tab1 = new Tab("Planes", codeGeneratePane());
+        Tab tab1 = new Tab("Planes", new GeneratePane());
         Tab tab2 = new Tab("Cars"  , new StackPane(new Label("Show all cars available")));
         Tab tab3 = new Tab("Boats" , new StackPane(new Label("Show all boats available")));
 

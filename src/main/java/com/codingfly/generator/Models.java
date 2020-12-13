@@ -68,6 +68,18 @@ public class Models {
         public void setUrl(String url) {
             this.url = url;
         }
+
+        @Override
+        public String toString() {
+            return "DBConfig{" +
+                    "id='" + id + '\'' +
+                    ", dbType='" + dbType + '\'' +
+                    ", name='" + name + '\'' +
+                    ", username='" + username + '\'' +
+                    ", password='" + password + '\'' +
+                    ", url='" + url + '\'' +
+                    '}';
+        }
     }
 
 

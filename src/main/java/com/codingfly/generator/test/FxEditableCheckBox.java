@@ -4,16 +4,18 @@ import javafx.application.Application;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,7 +25,6 @@ public class FxEditableCheckBox extends Application {
    public void start( Stage stage ) throws Exception {
       final TableView<Os> view = new TableView();
       final ObservableList<TableColumn<Os, ?>> columns = view.getColumns();
-
       final TableColumn<Os, String> nameColumn = new TableColumn("Name");
       nameColumn.setCellValueFactory(new PropertyValueFactory("name"));
       columns.add(nameColumn);
@@ -39,7 +40,12 @@ public class FxEditableCheckBox extends Application {
       xmlColumn.setCellValueFactory(param-> {
          return param.getValue().xmlProperty();
       });
-      xmlColumn.setCellFactory(tc -> new CheckBoxTableCell());
+      xmlColumn.setCellFactory(tc -> new MyCheckBoxTableCell() {});
+      xmlColumn.setOnEditCommit(event -> {
+         Os os = event.getRowValue();
+         System.out.println("===========================");
+         os.xmlProperty().setValue(event.getNewValue());
+      });
       columns.add(xmlColumn);
 
       final ObservableList<Os> items = FXCollections.observableArrayList(
@@ -119,5 +125,34 @@ public class FxEditableCheckBox extends Application {
 
    public static void main( String[] args ) {
       launch( args );
+   }
+
+   public class MyCheckBoxTableCell<S,T> extends CheckBoxTableCell<S,T> {
+      public MyCheckBoxTableCell() {
+         super();
+         for (Field field : CheckBoxTableCell.class.getDeclaredFields()) {
+            try {
+               //set accessable.
+               field.setAccessible(true);
+               if ("checkBox".equals(field.getName())) {
+                  CheckBox checkBox = (CheckBox)field.get(this);
+
+                  checkBox.selectedProperty().addListener(e-> {
+                     Os os = (Os)this.getTableRow().getItem();
+                     System.out.println(os.delete);
+                     System.out.println(os.name);
+                     System.out.println(os.xml);
+                  });
+               }
+               //get field name and value.
+//               System.out.println(field.getName() + ":" + field.get(this));
+            } catch (IllegalArgumentException e) {
+               e.printStackTrace();
+            } catch (IllegalAccessException e) {
+               e.printStackTrace();
+            }
+         }
+
+      }
    }
 }
